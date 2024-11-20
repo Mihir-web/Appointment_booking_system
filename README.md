@@ -17,10 +17,15 @@ Glen Dilip Correia - N01615526
 
 before we open the link we have to setup the project on out local environment.
 
-in the xampp > htdocs clone this repo
-extract storaze.zip file (it contains storaze and vendor folders)
-add any random db file which is present in your databse to initiate the app
+in the xampp > htdocs clone this repo.
+
+extract storaze.zip file (it contains storaze and vendor folders).
+
+add any random db file which is present in your databse to initiate the app.
+
 add .env file into the folder.
+
+Unzip the storage and vendor zip and replace it with the existing folder.
 open the given link
 
 Links:

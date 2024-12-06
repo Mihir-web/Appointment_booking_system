@@ -1,96 +1,44 @@
 <?php
 
+use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\DoctorController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProflController;
+use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\InventoryController;
-use App\Http\Controllers\ContactLeadsController;
-use App\Http\Controllers\FinancingLeadsController;
-use App\Http\Controllers\InventoryGalleryController;
-use App\Http\Controllers\ContactController;
-use App\Http\Controllers\FinanceController;
-use App\Http\Controllers\InventoryFrontController;
-use App\Http\Controllers\FrontController;
-use App\Http\Controllers\ContactInfoController;
-use App\Http\Controllers\TestimonialController;
-use App\Http\Controllers\HappyClientsController;
-use App\Http\Controllers\AboutUsController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
 
-// Route::get('/', function () {
-//     return view('welcome');
-// })->name('homepage');
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/home', [DoctorController::class, 'index'])->name('home');
+    Route::get('/dashboard', [DoctorController::class, 'index'])->name('dashboard');
+    Route::get('/new-appointment', [AppointmentController::class, 'newAppointment'])->name('newAppointment');
+    Route::get('/all-appointment', [AppointmentController::class, 'allAppointment'])->name('allAppointment');
+    Route::get('/cancel-appointment', [AppointmentController::class, 'cancelAppointment'])->name('cancelAppointment');
+    Route::get('/approve-appointment', [AppointmentController::class, 'aprvAppointment'])->name('aprvAppointment');
+    Route::get('/detail-appointment/{id}/{aptnum}', [AppointmentController::class, 'show'])->name('detailAppointment.show');
+    Route::put('/appointment/{id}', [AppointmentController::class, 'update'])->name('appointment.update');
 
-$meta_title = "";
-$meta_description = "";
-Route::get('/', [App\Http\Controllers\FrontController::class, 'index'])->name('homepage');
-Route::get('/doctor-dashboard', function(){
-    return view('doctordashboard');
+    Route::get('/search-appointment', [AppointmentController::class, 'searchPage'])->name("appointment.searchPage");
+    Route::get('/search-appointment/result', [AppointmentController::class, 'searchResult'])->name("appointment.searchResult");
+
+    Route::get('/report', [ReportController::class, 'index'])->name("report");
+    Route::post('/report', [ReportController::class, 'appointment_bwdates'])->name("appointment.bwdates");
+
+    Route::get('/profil', [ProflController::class, 'index'])->name("profil");
+    Route::get('/change-password', [ProflController::class, 'show'])->name('changePassword');
+    Route::put('/profil', [ProflController::class, 'update'])->name("profil.update");
 });
 
-Route::get('/appointment-requests', function(){
-    return view('appointmentrequest');
+Route::get('/', [AppointmentController::class, 'index'])->name("appointment.index");
+Route::post('/get-doctor', [AppointmentController::class, 'get_doctor'])->name("appointment.getDoctor");
+Route::post('/book-appointment', [AppointmentController::class, 'store'])->name("appointment.booking");
+Route::get('/check-appointment', [AppointmentController::class, 'check'])->name("appointment.check");
+Route::get('/check-appointment/search', [AppointmentController::class, 'searchAppointment'])->name("appointment.search");
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/doctor-appointments', function(){
-    return view('DoctorAppointments');
-});
-
-Route::get('/my-patients', function(){
-    return view('MyPatients');
-});
-
-
-Route::get('/patient-dashboard', function(){
-    return view('PatientDashboard');
-});
-
-Route::get('/patient-appointments', function(){
-    return view('PatientAppointments');
-});
-
-
-Route::get('admin/dashboard', function(){
-    return view('admin.adminHome');
-})->name('dashboard');
-
-Route::get('admin/appointments', function(){
-    return view('admin.appointments');
-})->name('appointments');
-
-Route::get('admin/specialities', function(){
-    return view('admin.specialities');
-})->name('specialities');
-
-Route::get('admin/doctors', function(){
-    return view('admin.doctors');
-})->name('doctors');
-
-Route::get('admin/patients', function(){
-    return view('admin.patients');
-})->name('patients');
-
-
-// Admin routes
-Route::group(['prefix' => 'admin'], function () {
-Auth::routes();
-});
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-Route::group(['prefix' => 'admin','middleware' => 'is_admin'], function () {
-  
-// Route::get('home', [HomeController::class, 'adminHome'])->name('adminHome');
-
-
-
-});
+require __DIR__ . '/auth.php';
